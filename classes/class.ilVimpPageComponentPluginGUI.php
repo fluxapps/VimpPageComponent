@@ -29,7 +29,6 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$this->tpl = $tpl;
 	}
 
-
 	public function executeCommand() {
 		$next_class = $this->ctrl->getNextClass();
 
