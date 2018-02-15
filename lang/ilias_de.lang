@@ -3,3 +3,6 @@ edit_ex_el#:#Video aus ViMP bearbeiten
 width#:#Breite
 height#:#Höhe
 choose_video#:#Suchen Sie mit Hilfe der Filter nach Videos in ViMP, um diese hinzuzufügen.
+msg_please_enter_filter#:#Bitte schränken Sie die Suche mithilfe der verfügbaren Filter ein.
+subtab_search#:#Suchen
+subtab_own_videos#:#Eigene Videos

@@ -11,7 +11,13 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 
 	const CMD_CREATE = 'create';
 	const CMD_INSERT = 'insert';
+	const CMD_STANDARD = self::CMD_INSERT;
 	const CMD_SHOW_FILTERED = 'showFiltered';
+	const CMD_SHOW_FILTERED_OWN_VIDEOS = 'showFilteredOwnVideos';
+	const CMD_OWN_VIDEOS = 'showOwnVideos';
+
+	const SUBTAB_SEARCH = 'subtab_search';
+	const SUBTAB_OWN_VIDEOS = 'subtab_own_videos';
 
 
 	/**
@@ -22,38 +28,85 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 * @var ilTemplate
 	 */
 	protected $tpl;
+	/**
+	 * @var ilTabsGUI
+	 */
+	protected $tabs;
+	/**
+	 * @var ilVimpPageComponentPlugin
+	 */
+	protected $pl;
 
+
+	/**
+	 * ilVimpPageComponentPluginGUI constructor.
+	 */
 	public function __construct() {
-		global $ilCtrl, $tpl;
+		global $ilCtrl, $tpl, $ilTabs;
 		$this->ctrl = $ilCtrl;
 		$this->tpl = $tpl;
+		$this->tabs = $ilTabs;
+		$this->pl = new ilVimpPageComponentPlugin();
 	}
 
-	public function executeCommand() {
-		$next_class = $this->ctrl->getNextClass();
 
-		switch ($next_class) {
-			default:
-				if ($cmd = $_GET['vpco_cmd']) {
-					$this->{$cmd}();
-					break;
-				} else {
-					$cmd = $this->ctrl->getCmd();
-					$this->$cmd();
-					break;
-				}
+	/**
+	 *
+	 */
+	public function executeCommand() {
+		try {
+			$next_class = $this->ctrl->getNextClass();
+
+			switch ($next_class) {
+				default:
+					if ($cmd = $_GET['vpco_cmd']) {
+						$this->{$cmd}();
+						break;
+					} else {
+						$cmd = $this->ctrl->getCmd();
+						$this->$cmd();
+						break;
+					}
+			}
+		} catch (xvmpException $e) {
+			ilUtil::sendFailure($e->getMessage(), true);
+			$this->ctrl->returnToParent($this);
 		}
 	}
 
+
+	/**
+	 * @param $cmd
+	 */
 	protected function redirect($cmd) {
 		$this->ctrl->setParameter($this, 'vpco_cmd', $cmd);
 		$this->ctrl->redirect($this, self::CMD_INSERT);
 	}
 
 
+	/**
+	 * @param $cmd
+	 *
+	 * @return string
+	 */
+	protected function getLinkTarget($cmd) {
+		$this->ctrl->setParameter($this, 'vpco_cmd', $cmd);
+		return $this->ctrl->getLinkTarget($this, self::CMD_INSERT);
+	}
+
+
+	/**
+	 *
+	 */
 	public function insert() {
-		ilUtil::sendInfo($this->getPlugin()->txt('choose_video'), true);
-		$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_CREATE);
+		$this->setSubTabs(self::SUBTAB_SEARCH);
+		ilUtil::sendInfo($this->getPlugin()->txt('choose_video'));
+		try {
+			$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_CREATE);
+		} catch (xvmpException $e) {
+			ilUtil::sendFailure($e->getMessage(), true);
+			$this->ctrl->returnToParent($this);
+		}
 		$table_gui->setFilterCommand(self::CMD_INSERT);
 		$table_gui->setResetCommand('');
 		$this->tpl->setContent($table_gui->getHTML());
@@ -63,10 +116,11 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 *
 	 */
 	protected function showFiltered() {
+		$this->setSubTabs(self::SUBTAB_SEARCH);
 		$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_INSERT);
 		$table_gui->setFilterCommand(self::CMD_INSERT);
 		$table_gui->parseData();
-		$this->tpl->setContent($table_gui->getHTML());
+		$this->tpl->setContent($table_gui->getHTML() . xvmpGUI::getModalPlayer()->getHTML());
 	}
 
 
@@ -81,18 +135,150 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	}
 
 
-//	/**
-//	 *
-//	 */
-//	public function resetFilter() {
-//		$table_gui = new xvmpSearchVideosTableGUI($this, self::CMD_INSERT);
-//		$table_gui->resetOffset();
-//		$table_gui->resetFilter();
-//		$this->ctrl->redirect($this, self::CMD_INSERT);
-//	}
+	/**
+	 *
+	 */
+	public function resetFilter() {
+		$table_gui = new xvmpSearchVideosTableGUI($this, self::CMD_INSERT);
+		$table_gui->resetOffset();
+		$table_gui->resetFilter();
+		$this->ctrl->redirect($this, self::CMD_INSERT);
+	}
+
+	public function showOwnVideos() {
+		$this->setSubTabs(self::SUBTAB_OWN_VIDEOS);
+		ilUtil::sendInfo($this->getPlugin()->txt('choose_video'), true);
+		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_CREATE);
+		$table_gui->setFilterCommand(self::CMD_INSERT);
+		$table_gui->setResetCommand('');
+		$this->tpl->setContent($table_gui->getHTML());
+	}
+
+	/**
+	 *
+	 */
+	public function applyFilterOwnVideos() {
+		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_INSERT);
+		$table_gui->resetOffset();
+		$table_gui->writeFilterToSession();
+		$this->redirect(self::CMD_SHOW_FILTERED_OWN_VIDEOS);
+	}
+
+	/**
+	 *
+	 */
+	protected function showFilteredOwnVideos() {
+		$this->setSubTabs(self::SUBTAB_OWN_VIDEOS);
+		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_INSERT);
+		$table_gui->setFilterCommand(self::CMD_INSERT);
+		$table_gui->parseData();
+		$this->tpl->setContent($table_gui->getHTML() . xvmpGUI::getModalPlayer()->getHTML());
+	}
+
+	/**
+	 *
+	 */
+	public function editVideo() {
+		$mid = $_GET['mid'];
+		$xvmpEditVideoFormGUI = new xvmpEditVideoFormGUI($this, $mid);
+		$xvmpEditVideoFormGUI->fillForm();
+		$this->tpl->setContent($xvmpEditVideoFormGUI->getHTML());
+	}
 
 
+	/**
+	 *
+	 */
+	public function updateVideo() {
+		$xvmpEditVideoFormGUI = new xvmpEditVideoFormGUI($this, $_POST['mid']);
+		$xvmpEditVideoFormGUI->setValuesByPost();
+		if ($xvmpEditVideoFormGUI->saveForm()) {
+			ilUtil::sendSuccess($this->pl->txt('form_saved'), true);
+			$this->redirect(xvmpOwnVideosGUI::CMD_EDIT_VIDEO);
+		}
+		ilUtil::sendFailure($this->pl->txt('msg_incomplete'));
+		$this->tpl->setContent($xvmpEditVideoFormGUI->getHTML());
+	}
 
+	/**
+	 *
+	 */
+	public function uploadVideoForm() {
+		$xvmpEditVideoFormGUI = new xvmpUploadVideoFormGUI($this);
+		$this->tpl->setContent($xvmpEditVideoFormGUI->getHTML());
+	}
+
+
+	/**
+	 *
+	 */
+	public function createVideo() {
+		$xvmpEditVideoFormGUI = new xvmpUploadVideoFormGUI($this);
+		$xvmpEditVideoFormGUI->setValuesByPost();
+		if ($xvmpEditVideoFormGUI->uploadVideo()) {
+			ilUtil::sendSuccess($this->pl->txt('video_uploaded'), true);
+			$this->ctrl->redirect($this, self::CMD_STANDARD);
+		}
+
+		ilUtil::sendFailure($this->pl->txt('form_incomplete'));
+		$xvmpEditVideoFormGUI->setValuesByPost();
+		$this->tpl->setContent($xvmpEditVideoFormGUI->getHTML());
+	}
+
+
+	/**
+	 *
+	 */
+	public function deleteVideo() {
+		$mid = $_GET['mid'];
+		$video = xvmpMedium::find($mid);
+		$confirmation_gui = new ilConfirmationGUI();
+		$confirmation_gui->setFormAction($this->ctrl->getFormAction($this));
+		$confirmation_gui->setHeaderText($this->pl->txt('confirm_delete_text'));
+		$confirmation_gui->addItem('mid', $mid, $video->getTitle());
+		$confirmation_gui->setConfirm($this->lng->txt('delete'),xvmpOwnVideosGUI::CMD_CONFIRMED_DELETE_VIDEO);
+		$confirmation_gui->setCancel($this->lng->txt('cancel'), xvmpOwnVideosGUI::CMD_STANDARD);
+		$this->tpl->setContent($confirmation_gui->getHTML());
+	}
+
+
+	/**
+	 *
+	 */
+	public function confirmedDeleteVideo() {
+		$mid = $_POST['mid'];
+
+		// fetch the video for logging purposes
+		$video = xvmpMedium::getObjectAsArray($mid);
+
+		xvmpMedium::deleteObject($mid);
+
+//		xvmpEventLog::logEvent(xvmpEventLog::ACTION_DELETE, $this->getObjId(), $video);
+
+		ilUtil::sendSuccess($this->pl->txt('video_deleted'), true);
+		$this->redirect(self::CMD_STANDARD);
+	}
+
+
+	/**
+	 *
+	 */
+	protected function uploadChunks() {
+		$xoctPlupload = new xoctPlupload();
+		$tmp_id = $_GET['tmp_id'];
+
+		$dir = ILIAS_ABSOLUTE_PATH  . ltrim(ilUtil::getWebspaceDir(), '.') . '/vimp/' . $tmp_id;
+		if (!is_dir($dir)) {
+			ilUtil::makeDir($dir);
+		}
+
+		$xoctPlupload->setTargetDir($dir);
+		$xoctPlupload->handleUpload();
+	}
+
+	/**
+	 *
+	 */
 	public function create() {
 		global $lng;
 
@@ -111,6 +297,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	}
 
 
+	/**
+	 *
+	 */
 	public function edit() {
 		global $tpl;
 
@@ -119,6 +308,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	}
 
 
+	/**
+	 *
+	 */
 	public function update() {
 		global $tpl, $lng;
 
@@ -176,6 +368,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	}
 
 
+	/**
+	 *
+	 */
 	public function cancel() {
 		$this->returnToParent();
 	}
@@ -191,12 +386,31 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 * @return mixed
 	 */
 	public function getElementHTML($a_mode, array $a_properties, $a_plugin_version) {
-		$video = xvmpMedium::find($a_properties['mid']);
+		try {
+			$video = xvmpMedium::find($a_properties['mid']);
+		} catch (xvmpException $e) {
+//			ilUtil::sendInfo($e->getMessage());
+			return '<img 
+				src="' . ilViMPPlugin::getInstance()->getImagePath('not_available.png') . '" 
+				height="' . $a_properties['height'] . '" 
+				width="' . $a_properties['width'] . '"
+			>';
+		}
 
 		xvmpVideoPlayer::loadVideoJSAndCSS(false);
 		$video_player = new xvmpVideoPlayer($video);
 		$video_player->setOption('height', $a_properties['height'] . 'px');
 		$video_player->setOption('width', $a_properties['width'] . 'px');
 		return $video_player->getHTML();
+	}
+
+
+	/**
+	 * @param $active
+	 */
+	protected function setSubTabs($active) {
+		$this->tabs->addSubTab(self::SUBTAB_SEARCH, $this->pl->txt(self::SUBTAB_SEARCH), $this->getLinkTarget(self::CMD_STANDARD));
+		$this->tabs->addSubTab(self::SUBTAB_OWN_VIDEOS, $this->pl->txt(self::SUBTAB_OWN_VIDEOS), $this->getLinkTarget(self::CMD_OWN_VIDEOS));
+		$this->tabs->setSubTabActive($active);
 	}
 }
