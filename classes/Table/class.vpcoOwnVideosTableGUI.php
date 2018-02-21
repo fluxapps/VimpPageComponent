@@ -8,6 +8,24 @@
  */
 class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 
+	protected $available_columns = array(
+		'thumbnail' => array(
+			'no_header' => true
+		),
+		'title' => array(
+			'sort_field' => 'title',
+		),
+		'published' => array(
+			'sort_field' => 'published'
+		),
+		'status' => array(
+			'sort_field' => 'status'
+		),
+		'created_at' => array(
+			'sort_field' => 'unix_time'
+		)
+	);
+
 	/**
 	 * vpcoSearchVideosTableGUI constructor.
 	 *
@@ -17,7 +35,7 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 	public function __construct($parent_gui, $parent_cmd) {
 		parent::__construct($parent_gui, $parent_cmd);
 
-		$base_link = $this->ctrl->getLinkTargetByClass(array(ilObjPluginDispatchGUI::class, ilObjViMPGUI::class, xvmpGUI::class),'', '', true);
+		$base_link = $this->ctrl->getLinkTargetByClass(array(ilObjPluginDispatchGUI::class, ilObjViMPGUI::class, xvmpOwnVideosGUI::class),'', '', true);
 		$this->tpl_global->addOnLoadCode('VimpContent.ajax_base_url = "'.$base_link.'";');
 
 		$this->pl = new ilVimpPageComponentPlugin();
@@ -38,8 +56,11 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 	 *
 	 */
 	protected function initColumns() {
-		parent::initColumns();
-	}
+		$this->addColumn('', '', 210, true);
+
+		xvmpTableGUI::initColumns();
+
+		$this->addColumn('', '', 75, true);	}
 
 
 	/**
@@ -62,7 +83,6 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 			$this->tpl->setVariable('VAL_' . strtoupper($title), $a_set[$title]);
 		}
 
-		$this->tpl->setVariable('VAL_ACTIONS', $this->buildActionList($a_set));
 		$this->tpl->setVariable('VAL_ADD', $this->getAddButton($a_set));
 		$this->tpl->parseCurrentBlock();
 	}
@@ -80,18 +100,18 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 		return $button->getToolbarHTML();
 	}
 
-	/**
-	 * @param $a_set
-	 *
-	 * @return string
-	 */
-	protected function buildActionList($a_set) {
-		$actions = new ilAdvancedSelectionListGUI();
-		$actions->setListTitle($this->lng->txt('actions'));
-		$this->ctrl->setParameter($this->parent_obj, 'mid', $a_set['mid']);
-		if ($a_set['status'] == 'legal') {
-			$actions->addItem($this->lng->txt('edit'), 'edit', $this->ctrl->getLinkTarget($this->parent_obj, xvmpOwnVideosGUI::CMD_EDIT_VIDEO));
-		}
-		$actions->addItem($this->lng->txt('delete'), 'delete', $this->ctrl->getLinkTarget($this->parent_obj, xvmpOwnVideosGUI::CMD_DELETE_VIDEO));
-		return $actions->getHTML();	}
+//	/**
+//	 * @param $a_set
+//	 *
+//	 * @return string
+//	 */
+//	protected function buildActionList($a_set) {
+//		$actions = new ilAdvancedSelectionListGUI();
+//		$actions->setListTitle($this->lng->txt('actions'));
+//		$this->ctrl->setParameter($this->parent_obj, 'mid', $a_set['mid']);
+//		if ($a_set['status'] == 'legal') {
+//			$actions->addItem($this->lng->txt('edit'), 'edit', $this->parent_obj->getLinkTarget(ilVimpPageComponentPluginGUI::CMD_EDIT_VIDEO));
+//		}
+//		$actions->addItem($this->lng->txt('delete'), 'delete', $this->parent_obj->getLinkTarget(ilVimpPageComponentPluginGUI::CMD_DELETE_VIDEO));
+//		return $actions->getHTML();	}
 }

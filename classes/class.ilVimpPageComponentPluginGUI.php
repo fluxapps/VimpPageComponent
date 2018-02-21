@@ -15,6 +15,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	const CMD_SHOW_FILTERED = 'showFiltered';
 	const CMD_SHOW_FILTERED_OWN_VIDEOS = 'showFilteredOwnVideos';
 	const CMD_OWN_VIDEOS = 'showOwnVideos';
+	const CMD_EDIT_VIDEO = 'editVideo';
+	const CMD_DELETE_VIDEO = 'deleteVideo';
+	const CMD_UPDATE_VIDEO = 'updateVideo';
 
 	const SUBTAB_SEARCH = 'subtab_search';
 	const SUBTAB_OWN_VIDEOS = 'subtab_own_videos';
@@ -60,7 +63,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 			switch ($next_class) {
 				default:
 					if ($cmd = $_GET['vpco_cmd']) {
-						$this->{$cmd}();
+						$this->$cmd();
 						break;
 					} else {
 						$cmd = $this->ctrl->getCmd();
@@ -78,7 +81,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	/**
 	 * @param $cmd
 	 */
-	protected function redirect($cmd) {
+	public function redirect($cmd) {
 		$this->ctrl->setParameter($this, 'vpco_cmd', $cmd);
 		$this->ctrl->redirect($this, self::CMD_INSERT);
 	}
@@ -89,7 +92,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 *
 	 * @return string
 	 */
-	protected function getLinkTarget($cmd) {
+	public function getLinkTarget($cmd) {
 		$this->ctrl->setParameter($this, 'vpco_cmd', $cmd);
 		return $this->ctrl->getLinkTarget($this, self::CMD_INSERT);
 	}
@@ -116,6 +119,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 *
 	 */
 	protected function showFiltered() {
+		xvmpVideoPlayer::loadVideoJSAndCSS(false);
 		$this->setSubTabs(self::SUBTAB_SEARCH);
 		$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_INSERT);
 		$table_gui->setFilterCommand(self::CMD_INSERT);
@@ -168,6 +172,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 *
 	 */
 	protected function showFilteredOwnVideos() {
+		xvmpVideoPlayer::loadVideoJSAndCSS(false);
 		$this->setSubTabs(self::SUBTAB_OWN_VIDEOS);
 		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_INSERT);
 		$table_gui->setFilterCommand(self::CMD_INSERT);
@@ -258,7 +263,6 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		ilUtil::sendSuccess($this->pl->txt('video_deleted'), true);
 		$this->redirect(self::CMD_STANDARD);
 	}
-
 
 	/**
 	 *

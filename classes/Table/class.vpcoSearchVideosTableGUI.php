@@ -16,19 +16,15 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 		),
 		'title' => array(
 			'sort_field' => 'title',
-			'width' => 300,
 		),
 		'description' => array(
 			'sort_field' => 'description',
-			'width' => 300,
 		),
 		'username' => array(
 			'sort_field' => 'user',
-			'width' => 100,
 		),
 		'created_at' => array(
 			'sort_field' => 'unix_time',
-			'width' => 150,
 		),
 	);
 
@@ -41,6 +37,8 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 	 */
 	public function __construct($parent_gui, $parent_cmd) {
 		parent::__construct($parent_gui, $parent_cmd);
+		$base_link = $this->ctrl->getLinkTargetByClass(array(ilObjPluginDispatchGUI::class, ilObjViMPGUI::class, xvmpOwnVideosGUI::class),'', '', true);
+		$this->tpl_global->addOnLoadCode('VimpContent.ajax_base_url = "'.$base_link.'";');
 
 		$this->pl = new ilVimpPageComponentPlugin();
 		$this->setRowTemplate($this->pl->getDirectory() . '/templates/' . static::ROW_TEMPLATE);
@@ -59,11 +57,11 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 	 *
 	 */
 	protected function initColumns() {
-		$this->addColumn('', '', 100, true);
 		$this->addColumn('', '', 210, true);
 
 		xvmpTableGUI::initColumns();
 
+		$this->addColumn('', '', 100, true);
 	}
 
 
