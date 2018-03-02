@@ -47,10 +47,11 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 * ilVimpPageComponentPluginGUI constructor.
 	 */
 	public function __construct() {
-		global $ilCtrl, $tpl, $ilTabs;
+		global $ilCtrl, $tpl, $ilTabs, $lng;
 		$this->ctrl = $ilCtrl;
 		$this->tpl = $tpl;
 		$this->tabs = $ilTabs;
+		$this->lng = $lng;
 		$this->pl = new ilVimpPageComponentPlugin();
 	}
 
@@ -61,15 +62,17 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	public function executeCommand() {
 		try {
 			$next_class = $this->ctrl->getNextClass();
+			$cmd = $this->ctrl->getCmd();
 
 			switch ($next_class) {
 				default:
-					if ($cmd = $_GET['vpco_cmd']) {
-						$this->$cmd();
+					if ($cmd == self::CMD_INSERT && $_GET['vpco_cmd']) {
+						$cmd = $_GET['vpco_cmd'];
+						$this->performCommand($cmd);
 						break;
 					} else {
 						$cmd = $this->ctrl->getCmd();
-						$this->$cmd();
+						$this->performCommand($cmd);
 						break;
 					}
 			}
@@ -79,6 +82,39 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		}
 	}
 
+	protected function performCommand($cmd) {
+		switch ($cmd) {
+			case self::CMD_STANDARD:
+			case self::CMD_SHOW:
+			case self::CMD_SHOW_FILTERED:
+				$this->ctrl->setParameter($this, 'vpco_cmd', 'resetFilter');
+				$url = $this->ctrl->getLinkTarget($this, self::CMD_STANDARD);
+				$this->ctrl->clearParameters($this);
+				$name = $this->lng->txt('reset_filter');
+				$this->tpl->addJavaScript($this->pl->getDirectory() . '/js/vpco.js');
+				$this->tpl->addOnLoadCode('VimpPageComponent.overwriteResetButton("' . $name .'", "' . $url . '");');
+				$this->$cmd();
+				break;
+			case self::CMD_SHOW_FILTERED_OWN_VIDEOS:
+			case self::CMD_OWN_VIDEOS:
+			case self::CMD_SHOW_OWN_VIDEOS:
+				$this->ctrl->setParameter($this, 'vpco_cmd', 'resetFilterOwnVideos');
+				$url = $this->ctrl->getLinkTarget($this, self::CMD_STANDARD);
+				$this->ctrl->clearParameters($this);
+				$name = $this->lng->txt('reset_filter');
+				$this->tpl->addJavaScript($this->pl->getDirectory() . '/js/vpco.js');
+				$this->tpl->addOnLoadCode('VimpPageComponent.overwriteResetButton("' . $name .'", "' . $url . '");');
+				$this->$cmd();
+			break;
+			case self::CMD_EDIT_VIDEO:
+			case self::CMD_DELETE_VIDEO:
+			case self::CMD_UPDATE_VIDEO:
+			case self::CMD_CREATE:
+			case self::CMD_INSERT:
+			default:
+				$this->$cmd();
+		}
+	}
 
 	/**
 	 * @param $cmd
@@ -104,6 +140,13 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 *
 	 */
 	public function insert() {
+		$this->ctrl->setParameter($this, 'vpco_cmd', 'resetFilter');
+		$url = $this->ctrl->getLinkTarget($this, self::CMD_STANDARD);
+		$this->ctrl->clearParameters($this);
+		$name = $this->lng->txt('reset_filter');
+		$this->tpl->addJavaScript($this->pl->getDirectory() . '/js/vpco.js');
+		$this->tpl->addOnLoadCode('VimpPageComponent.overwriteResetButton("' . $name .'", "' . $url . '");');
+
 		$this->setSubTabs(self::SUBTAB_SEARCH);
 		ilUtil::sendInfo($this->getPlugin()->txt('choose_video'));
 		try {
@@ -131,7 +174,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		}
 		$table_gui->setFilterCommand(self::CMD_INSERT);
 		$table_gui->parseData();
-		$this->tpl->setContent($table_gui->getHTML());
+		$this->tpl->setContent($table_gui->getHTML() . xvmpGUI::getModalPlayer()->getHTML());
 	}
 
 	/**
@@ -193,7 +236,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$table_gui->setFilterCommand(self::CMD_INSERT);
 		$table_gui->parseData();
 		$table_gui->determineOffsetAndOrder();
-		$this->tpl->setContent($table_gui->getHTML());
+		$this->tpl->setContent($table_gui->getHTML() . xvmpGUI::getModalPlayer()->getHTML());
 	}
 
 	/**
@@ -204,6 +247,16 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$table_gui->resetOffset();
 		$table_gui->writeFilterToSession();
 		$this->redirect(self::CMD_SHOW_FILTERED_OWN_VIDEOS);
+	}
+
+	/**
+	 *
+	 */
+	public function resetFilterOwnVideos() {
+		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_INSERT);
+		$table_gui->resetOffset();
+		$table_gui->resetFilter();
+		$this->redirect( self::CMD_OWN_VIDEOS);
 	}
 
 	/**
