@@ -402,7 +402,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		}
 
 		xvmpVideoPlayer::loadVideoJSAndCSS(false);
-		$video_player = new xvmpVideoPlayer($video);
+		$video_player = new xvmpVideoPlayer($video, xvmpConf::getConfig(xvmpConf::F_EMBED_PLAYER));
 		$video_player->setOption('height', $a_properties['height'] . 'px');
 		$video_player->setOption('width', $a_properties['width'] . 'px');
 		return $video_player->getHTML();
