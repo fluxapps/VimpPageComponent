@@ -372,7 +372,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 
 		$video_properties = array(
 			"mid" => $mid,
-			"width" => 200,
+			"width" => 268,
 			"height" => 150
 		);
 
