@@ -12,9 +12,11 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	const CMD_CREATE = 'create';
 	const CMD_INSERT = 'insert';
 	const CMD_STANDARD = self::CMD_INSERT;
+	const CMD_SHOW = 'show';
 	const CMD_SHOW_FILTERED = 'showFiltered';
 	const CMD_SHOW_FILTERED_OWN_VIDEOS = 'showFilteredOwnVideos';
-	const CMD_OWN_VIDEOS = 'showOwnVideos';
+	const CMD_OWN_VIDEOS = 'indexOwnVideos';
+	const CMD_SHOW_OWN_VIDEOS = 'showOwnVideos';
 	const CMD_EDIT_VIDEO = 'editVideo';
 	const CMD_DELETE_VIDEO = 'deleteVideo';
 	const CMD_UPDATE_VIDEO = 'updateVideo';
@@ -111,7 +113,24 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 			$this->ctrl->returnToParent($this);
 		}
 		$table_gui->setFilterCommand(self::CMD_INSERT);
-		$table_gui->setResetCommand('');
+		$this->tpl->setContent($table_gui->getHTML());
+	}
+
+
+	/**
+	 *
+	 */
+	public function show() {
+		$this->setSubTabs(self::SUBTAB_SEARCH);
+		ilUtil::sendInfo($this->getPlugin()->txt('choose_video'));
+		try {
+			$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_CREATE);
+		} catch (xvmpException $e) {
+			ilUtil::sendFailure($e->getMessage(), true);
+			$this->ctrl->returnToParent($this);
+		}
+		$table_gui->setFilterCommand(self::CMD_INSERT);
+		$table_gui->parseData();
 		$this->tpl->setContent($table_gui->getHTML());
 	}
 
@@ -124,6 +143,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_INSERT);
 		$table_gui->setFilterCommand(self::CMD_INSERT);
 		$table_gui->parseData();
+		$table_gui->determineOffsetAndOrder();
 		$this->tpl->setContent($table_gui->getHTML() . xvmpGUI::getModalPlayer()->getHTML());
 	}
 
@@ -132,6 +152,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 *
 	 */
 	public function applyFilter() {
+		$this->ctrl->clearParameters($this);
 		$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_INSERT);
 		$table_gui->resetOffset();
 		$table_gui->writeFilterToSession();
@@ -149,12 +170,29 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$this->ctrl->redirect($this, self::CMD_INSERT);
 	}
 
+
+	/**
+	 *
+	 */
+	public function indexOwnVideos() {
+		$this->setSubTabs(self::SUBTAB_OWN_VIDEOS);
+		ilUtil::sendInfo($this->getPlugin()->txt('choose_video'), true);
+		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_CREATE);
+		$table_gui->setFilterCommand(self::CMD_INSERT);
+		$this->tpl->setContent($table_gui->getHTML());
+	}
+
+
+	/**
+	 *
+	 */
 	public function showOwnVideos() {
 		$this->setSubTabs(self::SUBTAB_OWN_VIDEOS);
 		ilUtil::sendInfo($this->getPlugin()->txt('choose_video'), true);
 		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_CREATE);
 		$table_gui->setFilterCommand(self::CMD_INSERT);
-		$table_gui->setResetCommand('');
+		$table_gui->parseData();
+		$table_gui->determineOffsetAndOrder();
 		$this->tpl->setContent($table_gui->getHTML());
 	}
 

@@ -49,7 +49,9 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 
 		$this->ctrl->setParameter($this->parent_obj, 'vpco_cmd', 'applyFilter');
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_obj));
-		$this->ctrl->clearParameters($this->parent_obj);
+
+		$this->ctrl->setParameter($this->parent_obj, 'vpco_cmd', 'show');
+
 	}
 
 
@@ -102,6 +104,7 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 	 *
 	 */
 	protected function redirectToParent() {
+		$this->ctrl->clearParameters($this->parent_obj);
 		$this->ctrl->redirect($this->parent_obj, ilVimpPageComponentPluginGUI::CMD_STANDARD);
 	}
 }

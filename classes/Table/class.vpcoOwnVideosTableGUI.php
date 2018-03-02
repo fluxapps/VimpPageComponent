@@ -48,7 +48,7 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 
 		$this->ctrl->setParameter($this->parent_obj, 'vpco_cmd', 'applyFilterOwnVideos');
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_obj));
-		$this->ctrl->clearParameters($this->parent_obj);
+		$this->ctrl->setParameter($this->parent_obj, 'vpco_cmd', 'showOwnVideos');
 	}
 
 
