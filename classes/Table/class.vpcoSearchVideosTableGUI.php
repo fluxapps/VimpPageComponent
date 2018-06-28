@@ -37,6 +37,7 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 	 */
 	public function __construct($parent_gui, $parent_cmd) {
 		parent::__construct($parent_gui, $parent_cmd);
+
 		$base_link = $this->ctrl->getLinkTargetByClass(array(ilObjPluginDispatchGUI::class, ilObjViMPGUI::class, xvmpOwnVideosGUI::class),'', '', true);
 		$this->tpl_global->addOnLoadCode('VimpContent.ajax_base_url = "'.$base_link.'";');
 
@@ -76,7 +77,7 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 		foreach ($this->available_columns as $title => $props)
 		{
 			if ($title == 'thumbnail') {
-				$this->tpl->setVariable('VAL_' . strtoupper($title), $a_set[$title] . 'size=' . self::THUMBSIZE);
+				$this->tpl->setVariable('VAL_' . strtoupper($title), $a_set[$title] . '&size=' . self::THUMBSIZE);
 				continue;
 			}
 

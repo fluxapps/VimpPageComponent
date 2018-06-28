@@ -148,7 +148,8 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 			ilUtil::sendFailure($e->getMessage(), true);
 			$this->ctrl->returnToParent($this);
 		}
-		$this->tpl->setContent($table_gui->getHTML());
+        $table_gui->setFilterCommand(self::CMD_INSERT);
+        $this->tpl->setContent($table_gui->getHTML());
 	}
 
 
@@ -164,7 +165,8 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 			ilUtil::sendFailure($e->getMessage(), true);
 			$this->ctrl->returnToParent($this);
 		}
-		$table_gui->parseData();
+        $table_gui->setFilterCommand(self::CMD_INSERT);
+        $table_gui->parseData();
 		$this->tpl->setContent($table_gui->getHTML() . xvmpGUI::getModalPlayer()->getHTML());
 	}
 
@@ -188,7 +190,8 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	public function applyFilter() {
 		$this->ctrl->clearParameters($this);
 		$table_gui = new vpcoSearchVideosTableGUI($this, self::CMD_INSERT);
-		$table_gui->resetOffset();
+        $table_gui->setFilterCommand(self::CMD_INSERT);
+        $table_gui->resetOffset();
 		$table_gui->writeFilterToSession();
 		$this->redirect(self::CMD_SHOW_FILTERED);
 	}
