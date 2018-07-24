@@ -56,7 +56,7 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 	 *
 	 */
 	protected function initColumns() {
-		$this->addColumn('', '', 210, true);
+		$this->addColumn($this->pl->txt('added'), '', 210, false);
 
 		xvmpTableGUI::initColumns();
 
