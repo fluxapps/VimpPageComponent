@@ -84,6 +84,14 @@ class vpcoSearchVideosTableGUI extends xvmpSearchVideosTableGUI {
 			$this->tpl->setVariable('VAL_' . strtoupper($title), $a_set[$title] ? $a_set[$title] : '&nbsp;');
 		}
 
+        foreach ($this->getSelectableColumns() as $title => $props) {
+            if ($this->isColumnSelected($title)) {
+                $this->tpl->setCurrentBlock('generic');
+                $this->tpl->setVariable('VAL_GENERIC', $this->parseColumnValue($title, $a_set[$title]));
+                $this->tpl->parseCurrentBlock();
+            }
+        }
+
 		$this->tpl->setVariable('VAL_ADD', $this->getAddButton($a_set));
 	}
 
