@@ -105,7 +105,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 				$this->tpl->addJavaScript($this->pl->getDirectory() . '/js/vpco.js');
 				$this->tpl->addOnLoadCode('VimpPageComponent.overwriteResetButton("' . $name .'", "' . $url . '");');
 				$this->$cmd();
-			break;
+			    break;
 			case self::CMD_EDIT_VIDEO:
 			case self::CMD_DELETE_VIDEO:
 			case self::CMD_UPDATE_VIDEO:
@@ -259,7 +259,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	protected function showFilteredOwnVideos() {
 		xvmpVideoPlayer::loadVideoJSAndCSS(false);
 		$this->setSubTabs(self::SUBTAB_OWN_VIDEOS);
-		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_INSERT);
+		$table_gui = new vpcoOwnVideosTableGUI($this, self::CMD_INSERT, self::CMD_SHOW_FILTERED_OWN_VIDEOS);
 		$table_gui->setFilterCommand(self::CMD_INSERT);
 		$table_gui->parseData();
 		$this->tpl->setContent($table_gui->getHTML() . xvmpGUI::getModalPlayer()->getHTML());
