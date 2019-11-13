@@ -25,15 +25,21 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 			'sort_field' => 'unix_time'
 		)
 	);
+    /**
+     * @var ilViMPPlugin
+     */
+    protected $vimp_pl;
 
-	/**
-	 * vpcoSearchVideosTableGUI constructor.
-	 *
-	 * @param int    $parent_gui
-	 * @param string $parent_cmd
-	 */
-	public function __construct($parent_gui, $parent_cmd) {
-		parent::__construct($parent_gui, $parent_cmd);
+
+    /**
+     * vpcoSearchVideosTableGUI constructor.
+     *
+     * @param int    $parent_gui
+     * @param string $parent_cmd
+     * @param        $vpco_cmd
+     */
+	public function __construct($parent_gui, $parent_cmd, $vpco_cmd = '') {
+		parent::__construct($parent_gui, $vpco_cmd == ilVimpPageComponentPluginGUI::CMD_SHOW_FILTERED_OWN_VIDEOS ? xvmpOwnVideosGUI::CMD_SHOW_FILTERED : $parent_cmd);
 
 		$base_link = $this->ctrl->getLinkTargetByClass(array(ilObjPluginDispatchGUI::class, ilObjViMPGUI::class, xvmpOwnVideosGUI::class),'', '', true);
 		$this->tpl_global->addOnLoadCode('VimpContent.ajax_base_url = "'.$base_link.'";');
@@ -49,6 +55,16 @@ class vpcoOwnVideosTableGUI extends xvmpOwnVideosTableGUI {
 		$this->ctrl->setParameter($this->parent_obj, 'vpco_cmd', 'applyFilterOwnVideos');
 		$this->setFormAction($this->ctrl->getFormAction($this->parent_obj));
 		$this->ctrl->setParameter($this->parent_obj, 'vpco_cmd', 'showOwnVideos');
+
+        if ($vpco_cmd !== ilVimpPageComponentPluginGUI::CMD_SHOW_FILTERED_OWN_VIDEOS) {
+            $this->tpl = new ilTemplate("tpl.own_videos_table.html", true, true, $this->vimp_pl->getDirectory());
+            $this->tpl->setVariable('TABLE_CONTENT_HIDDEN', 'hidden');
+            $this->tpl->setCurrentBlock('xvmp_show_videos_button');
+            $this->ctrl->setParameter($this->parent_obj, 'vpco_cmd', ilVimpPageComponentPluginGUI::CMD_SHOW_FILTERED_OWN_VIDEOS);
+            $this->tpl->setVariable('SHOW_VIDEOS_LINK', $this->ctrl->getLinkTarget($this->parent_obj, ilVimpPageComponentPluginGUI::CMD_INSERT));
+            $this->tpl->setVariable('SHOW_VIDEOS_LABEL', $this->vimp_pl->txt('btn_show_own_videos'));
+            $this->tpl->parseCurrentBlock();
+        }
 	}
 
 
