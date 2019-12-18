@@ -423,35 +423,54 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	}
 
 
-	/**
-	 * @return ilPropertyFormGUI
-	 */
+    /**
+     * @return ilPropertyFormGUI
+     * @throws ilTemplateException
+     * @throws xvmpException
+     */
 	public function initForm() {
-		global $lng, $ilCtrl;
+		global $lng, $ilCtrl, $tpl;
+
+		$tpl->addJavaScript($this->getPlugin()->getDirectory() . '/node_modules/ion-rangeslider/js/ion.rangeSlider.min.js');
+		$tpl->addCss($this->getPlugin()->getDirectory() . '/node_modules/ion-rangeslider/css/ion.rangeSlider.min.css');
+		$tpl->addJavaScript($this->getPlugin()->getDirectory() . '/js/vpco.js');
+		$tpl->addOnLoadCode('VimpPageComponent.initForm();');
 
 		include_once("Services/Form/classes/class.ilPropertyFormGUI.php");
 		$form = new ilPropertyFormGUI();
+        $prop = $this->getProperties();
+        $video = xvmpMedium::find($prop['mid']);
+
+        // thumbnail
+        $thumbnail = new ilNonEditableValueGUI($lng->txt('preview'), '', true);
+        $thumbnail->setValue('<img width="' . $prop['width'] . 'px" height="' . $prop['height'] . 'px" id="vpco_thumbnail" src="' . $video->getThumbnail() . '">');
+        $form->addItem($thumbnail);
 
 		// width
-		$width = new ilTextInputGUI($this->getPlugin()->txt("width"), "width");
-		$width->setMaxLength(4);
-		$width->setSize(40);
+		$width = new ilNumberInputGUI($this->getPlugin()->txt("width"), "width");
 		$width->setRequired(true);
-		$form->addItem($width);
+        $width->setValue($prop["width"]);
+        $form->addItem($width);
 
-		// height
-		$height = new ilTextInputGUI($this->getPlugin()->txt("height"), "height");
-		$height->setMaxLength(3);
-		$height->setSize(40);
-		$height->setRequired(true);
+        // height
+        $height = new ilNumberInputGUI($this->getPlugin()->txt("height"), "height");
+        $height->setValue($prop["height"]);
+        $height->setRequired(true);
+        $form->addItem($height);
 
-		$form->addItem($height);
+        // keep proportions
+        $keep_aspect_ratio = new ilCheckboxInputGUI($this->getPlugin()->txt("keep_aspect_ratio"), "keep_aspect_ratio");
+        $keep_aspect_ratio->setChecked(true);
+        $form->addItem($keep_aspect_ratio);
 
-		$prop = $this->getProperties();
-		$width->setValue($prop["width"]);
-		$height->setValue($prop["height"]);
+        // slider
+        $slider = new ilNonEditableValueGUI('', '', true);
+        $slider_tpl = $this->getPlugin()->getTemplate('tpl.slider_input.html', false, false);
+        $slider_tpl->setVariable('CONFIG', json_encode($this->getRangeSliderConfig()));
+        $slider->setValue($slider_tpl->get());
+        $form->addItem($slider);
 
-		$form->addCommandButton("update", $lng->txt("save"));
+        $form->addCommandButton("update", $lng->txt("save"));
 		$form->addCommandButton("cancel", $lng->txt("cancel"));
 		$form->setTitle($this->getPlugin()->txt("edit_ex_el"));
 
@@ -506,4 +525,31 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$this->tabs->addSubTab(self::SUBTAB_OWN_VIDEOS, $this->pl->txt(self::SUBTAB_OWN_VIDEOS), $this->getLinkTarget(self::CMD_OWN_VIDEOS));
 		$this->tabs->setSubTabActive($active);
 	}
+
+
+    /**
+     * @return ilVimpPageComponentPlugin
+     */
+    public function getPlugin()
+    {
+        return parent::getPlugin();
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function getRangeSliderConfig()
+    {
+        return [
+            'skin' => 'modern',
+            'min' => 0,
+            'max' => 100,
+            'from' => 50,
+            'from_min' => 10,
+            'step' => 1,
+            'grid' => true,
+            'postfix' => '%',
+        ];
+    }
 }
