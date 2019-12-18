@@ -1,31 +1,42 @@
 {
-    "name": "studer-raimann.ch/vimp-page-component",
-    "type": "project",
-    "license": "GPL-3.0+",
-    "authors": [
-        {
-            "name": "Theodor Truffer",
-            "email": "tt@studer-raimann.ch",
-            "homepage": "https://studer-raimann.ch",
-            "role": "Project Manager, Software Engineer"
-        }
-    ],
- "support": {
+  "name": "studer-raimann.ch/vimp-page-component",
+  "type": "project",
+  "license": "GPL-3.0+",
+  "authors": [
+    {
+      "name": "Theodor Truffer",
+      "email": "tt@studer-raimann.ch",
+      "homepage": "https://studer-raimann.ch",
+      "role": "Project Manager, Software Engineer"
+    }
+  ],
+  "support": {
     "issues": "https://plugins.studer-raimann.ch/goto.php?target=uihk_srsu_PLVIMP"
   },
-    "minimum-stability": "beta",
-    "prefer-stable": true,
-    "require": {},
-    "autoload": {
-        "classmap": [
-            "./classes/",
-            "../../../Repository/RepositoryObject/ViMP",
-            "../../../../../../../Services/COPage"
-        ]
-    },
-    "config": {
-        "optimize-autoloader": true,
-        "sort-packages": true,
-        "classmap-authoritative": true
-    }
+  "minimum-stability": "beta",
+  "prefer-stable": true,
+  "require": {
+    "php": ">=7.0",
+    "srag/activerecordconfig": ">=0.1.0",
+    "srag/custominputguis": ">=0.1.0",
+    "srag/dic": ">=0.1.0",
+    "srag/librariesnamespacechanger": ">=0.1.0",
+    "srag/removeplugindataconfirm": ">=0.1.0"
+  },
+  "autoload": {
+    "classmap": [
+      "./classes/",
+      "./src/",
+      "../../../Repository/RepositoryObject/ViMP",
+      "../../../../../../../Services/COPage"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "classmap-authoritative": true
+  },
+  "scripts": {
+    "pre-autoload-dump": "srag\\LibrariesNamespaceChanger\\LibrariesNamespaceChanger::rewriteLibrariesNamespaces"
+  }
 }

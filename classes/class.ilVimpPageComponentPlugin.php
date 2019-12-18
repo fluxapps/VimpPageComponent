@@ -8,6 +8,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 class ilVimpPageComponentPlugin extends ilPageComponentPlugin {
 
+    const PLUGIN_NAME = 'VimpPageComponent';
+
     /**
      * Get plugin name
      *
@@ -26,15 +28,6 @@ class ilVimpPageComponentPlugin extends ilPageComponentPlugin {
      */
     function isValidParentType($a_parent_type)
     {
-        global $ilUser, $rbacreview;
-//        if($roles = $rbacreview->getRolesByFilter(2, 0, 'VideoManagerTME')) {
-//            foreach($roles as $role) {
-//                if($rbacreview->isAssigned($ilUser->getId(), $role['rol_id'])){
-//                    return true;
-//                }
-//            }
-//            return false;
-//        }
         return true;
     }
 

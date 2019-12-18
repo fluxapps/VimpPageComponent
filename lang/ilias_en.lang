@@ -8,3 +8,10 @@ subtab_search#:#Search
 subtab_own_videos#:#Own Videos
 added#:#Added
 categories#:#Categories
+config_configuration#:#Configuration
+config_configuration_saved#:#Configuration saved
+config_save#:#Save
+config_default_width#:#Default Width
+config_default_width_info#:#If left blank, the video's default width will be used.
+config_default_height#:#Default Height
+config_default_height_info#:#If left blank, the video's default height will be used.

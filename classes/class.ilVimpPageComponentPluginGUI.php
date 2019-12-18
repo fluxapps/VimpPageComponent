@@ -1,4 +1,7 @@
 <?php
+
+use srag\Plugins\VimpPageComponent\Config\Config;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
@@ -9,7 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 
-	const CMD_CREATE = 'create';
+    const CMD_CREATE = 'create';
 	const CMD_INSERT = 'insert';
 	const CMD_STANDARD = self::CMD_INSERT;
 	const CMD_SHOW = 'show';
@@ -371,17 +374,18 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	public function create() {
 		global $lng;
 
-		$mid = $_GET['mid'];
+		$mid = filter_input(INPUT_GET, 'mid', FILTER_SANITIZE_NUMBER_INT);
+        $video = xvmpMedium::find($mid);
 
-		$video_properties = array(
+        $video_properties = array(
 			"mid" => $mid,
-			"width" => 268,
-			"height" => 150
+			"width" => Config::getField(Config::KEY_DEFAULT_WIDTH) ?: (isset($video->getProperties()['width']) ? $video->getProperties()['width'] : 268),
+			"height" => Config::getField(Config::KEY_DEFAULT_HEIGHT) ?: (isset($video->getProperties()['height']) ? $video->getProperties()['height'] : 150)
 		);
 
 		if ($this->createElement($video_properties)) {
 			ilUtil::sendSuccess($lng->txt("msg_obj_modified"), true);
-			$this->returnToParent();
+			$this->edit();
 		}
 	}
 

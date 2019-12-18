@@ -8,3 +8,10 @@ subtab_search#:#Suchen
 subtab_own_videos#:#Eigene Videos
 added#:#Hinzugefügt
 categories#:#Kategorien
+config_configuration#:#Konfiguration
+config_configuration_saved#:#Konfiguration gespeichert
+config_save#:#Speichern
+config_default_width#:#Standard-Breite
+config_default_width_info#:#Falls nicht gesetzt, wird die Standard-Breite des Videos verwendet.
+config_default_height#:#Standard-Höhe
+config_default_height_info#:#Falls nicht gesetzt, wird die Standard-Höhe des Videos verwendet.
