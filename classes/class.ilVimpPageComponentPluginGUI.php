@@ -1,4 +1,7 @@
 <?php
+
+use srag\Plugins\VimpPageComponent\Config\Config;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
@@ -9,7 +12,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 
-	const CMD_CREATE = 'create';
+    const CMD_CREATE = 'create';
 	const CMD_INSERT = 'insert';
 	const CMD_STANDARD = self::CMD_INSERT;
 	const CMD_SHOW = 'show';
@@ -371,17 +374,18 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	public function create() {
 		global $lng;
 
-		$mid = $_GET['mid'];
+		$mid = filter_input(INPUT_GET, 'mid', FILTER_SANITIZE_NUMBER_INT);
+        $video = xvmpMedium::find($mid);
 
-		$video_properties = array(
+        $video_properties = array(
 			"mid" => $mid,
-			"width" => 268,
-			"height" => 150
+			"width" => Config::getField(Config::KEY_DEFAULT_WIDTH) ?: (isset($video->getProperties()['width']) ? $video->getProperties()['width'] : 268),
+			"height" => Config::getField(Config::KEY_DEFAULT_HEIGHT) ?: (isset($video->getProperties()['height']) ? $video->getProperties()['height'] : 150)
 		);
 
 		if ($this->createElement($video_properties)) {
 			ilUtil::sendSuccess($lng->txt("msg_obj_modified"), true);
-			$this->returnToParent();
+			$this->edit();
 		}
 	}
 
@@ -406,8 +410,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$form = $this->initForm();
 		if ($form->checkInput()) {
 			$properties = $this->getProperties();
-			$properties['width'] = $form->getInput('width');
-			$properties['height'] = $form->getInput('height');
+			$size = $form->getInput('size');
+			$properties['width'] = $size['width'];
+			$properties['height'] = $size['height'];
 			if ($this->updateElement($properties)) {
 				ilUtil::sendSuccess($lng->txt("msg_obj_modified"), true);
 				$this->returnToParent();
@@ -419,35 +424,45 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	}
 
 
-	/**
-	 * @return ilPropertyFormGUI
-	 */
+    /**
+     * @return ilPropertyFormGUI
+     * @throws ilTemplateException
+     * @throws xvmpException
+     */
 	public function initForm() {
-		global $lng, $ilCtrl;
+		global $lng, $ilCtrl, $tpl;
+
+		$tpl->addJavaScript($this->getPlugin()->getDirectory() . '/node_modules/ion-rangeslider/js/ion.rangeSlider.min.js');
+		$tpl->addCss($this->getPlugin()->getDirectory() . '/node_modules/ion-rangeslider/css/ion.rangeSlider.min.css');
+		$tpl->addJavaScript($this->getPlugin()->getDirectory() . '/js/vpco.js');
+		$tpl->addOnLoadCode('VimpPageComponent.initForm();');
 
 		include_once("Services/Form/classes/class.ilPropertyFormGUI.php");
 		$form = new ilPropertyFormGUI();
+        $prop = $this->getProperties();
+        $video = xvmpMedium::find($prop['mid']);
 
-		// width
-		$width = new ilTextInputGUI($this->getPlugin()->txt("width"), "width");
-		$width->setMaxLength(4);
-		$width->setSize(40);
-		$width->setRequired(true);
-		$form->addItem($width);
+        // thumbnail
+        $thumbnail = new ilNonEditableValueGUI($lng->txt('preview'), '', true);
+        $thumbnail->setValue('<img width="' . $prop['width'] . 'px" height="' . $prop['height'] . 'px" id="vpco_thumbnail" src="' . $video->getThumbnail() . '">');
+        $form->addItem($thumbnail);
 
-		// height
-		$height = new ilTextInputGUI($this->getPlugin()->txt("height"), "height");
-		$height->setMaxLength(3);
-		$height->setSize(40);
-		$height->setRequired(true);
+        // width height
+        $width_height = new ilWidthHeightInputGUI($lng->txt("cont_width") .
+            " / " . $lng->txt("cont_height"), "size");
+        $width_height->setConstrainProportions(true);
+        $width_height->setRequired(true);
+        $width_height->setValueByArray(['size' => array_merge($prop, ['constr_prop' => true])]);
+        $form->addItem($width_height);
 
-		$form->addItem($height);
+        // slider
+        $slider = new ilNonEditableValueGUI('', '', true);
+        $slider_tpl = $this->getPlugin()->getTemplate('tpl.slider_input.html', false, false);
+        $slider_tpl->setVariable('CONFIG', json_encode($this->getRangeSliderConfig()));
+        $slider->setValue($slider_tpl->get());
+        $form->addItem($slider);
 
-		$prop = $this->getProperties();
-		$width->setValue($prop["width"]);
-		$height->setValue($prop["height"]);
-
-		$form->addCommandButton("update", $lng->txt("save"));
+        $form->addCommandButton("update", $lng->txt("save"));
 		$form->addCommandButton("cancel", $lng->txt("cancel"));
 		$form->setTitle($this->getPlugin()->txt("edit_ex_el"));
 
@@ -502,4 +517,31 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$this->tabs->addSubTab(self::SUBTAB_OWN_VIDEOS, $this->pl->txt(self::SUBTAB_OWN_VIDEOS), $this->getLinkTarget(self::CMD_OWN_VIDEOS));
 		$this->tabs->setSubTabActive($active);
 	}
+
+
+    /**
+     * @return ilVimpPageComponentPlugin
+     */
+    public function getPlugin()
+    {
+        return parent::getPlugin();
+    }
+
+
+    /**
+     * @return array
+     */
+    protected function getRangeSliderConfig()
+    {
+        return [
+            'skin' => 'modern',
+            'min' => 0,
+            'max' => 100,
+            'from' => 50,
+            'from_min' => 10,
+            'step' => 1,
+            'grid' => true,
+            'postfix' => '%',
+        ];
+    }
 }
