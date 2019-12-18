@@ -12,7 +12,7 @@ VimpPageComponent = {
 		VimpPageComponent.slider = $("#vpco_slider").data("ionRangeSlider");
 		VimpPageComponent.updateSlider();
 
-		$('input#width').change(function() {
+		$('input#prop_size_width').change(function() {
 			let new_width = $(this).val();
 			if (VimpPageComponent.keepAspectRatio()) {
 				let current_width = $('#vpco_thumbnail').width();
@@ -20,13 +20,13 @@ VimpPageComponent = {
 				let ratio = (current_width / current_height);
 				let new_height = new_width / ratio;
 				$('#vpco_thumbnail').height(new_height);
-				$('input#height').val(new_height);
+				$('input#prop_size_height').val(new_height);
 			}
 			$('#vpco_thumbnail').width(new_width);
 			VimpPageComponent.updateSlider();
 		});
 
-		$('input#height').change(function() {
+		$('input#prop_size_height').change(function() {
 			let new_height = $(this).val();
 			if (VimpPageComponent.keepAspectRatio()) {
 				let current_width = $('#vpco_thumbnail').width();
@@ -34,7 +34,7 @@ VimpPageComponent = {
 				let ratio = (current_width / current_height);
 				let new_width = new_height * ratio;
 				$('#vpco_thumbnail').width(new_width);
-				$('input#width').val(new_width);
+				$('input#prop_size_width').val(new_width);
 				VimpPageComponent.updateSlider();
 			}
 			$('#vpco_thumbnail').height(new_height);
@@ -42,7 +42,7 @@ VimpPageComponent = {
 	},
 
 	updateSlider: function() {
-		let width = $('input#width').val();
+		let width = $('input#prop_size_width').val();
 		let percentage = (width / VimpPageComponent.max_width) * 100;
 		VimpPageComponent.slider.update({from: percentage});
 	},
@@ -57,12 +57,12 @@ VimpPageComponent = {
 		let new_height = (new_width / ratio);
 
 		$('#vpco_thumbnail').width(new_width);
-		$('input#width').val(new_width);
+		$('input#prop_size_width').val(new_width);
 		$('#vpco_thumbnail').height(new_height);
-		$('input#height').val(new_height);
+		$('input#prop_size_height').val(new_height);
 	},
 
 	keepAspectRatio: function() {
-		return $('input#keep_aspect_ratio').is(":checked");
+		return $('input#prop_size_constr').is(":checked");
 	},
 }

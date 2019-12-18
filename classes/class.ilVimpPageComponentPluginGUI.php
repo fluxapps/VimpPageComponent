@@ -410,8 +410,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		$form = $this->initForm();
 		if ($form->checkInput()) {
 			$properties = $this->getProperties();
-			$properties['width'] = $form->getInput('width');
-			$properties['height'] = $form->getInput('height');
+			$size = $form->getInput('size');
+			$properties['width'] = $size['width'];
+			$properties['height'] = $size['height'];
 			if ($this->updateElement($properties)) {
 				ilUtil::sendSuccess($lng->txt("msg_obj_modified"), true);
 				$this->returnToParent();
@@ -446,22 +447,13 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
         $thumbnail->setValue('<img width="' . $prop['width'] . 'px" height="' . $prop['height'] . 'px" id="vpco_thumbnail" src="' . $video->getThumbnail() . '">');
         $form->addItem($thumbnail);
 
-		// width
-		$width = new ilNumberInputGUI($this->getPlugin()->txt("width"), "width");
-		$width->setRequired(true);
-        $width->setValue($prop["width"]);
-        $form->addItem($width);
-
-        // height
-        $height = new ilNumberInputGUI($this->getPlugin()->txt("height"), "height");
-        $height->setValue($prop["height"]);
-        $height->setRequired(true);
-        $form->addItem($height);
-
-        // keep proportions
-        $keep_aspect_ratio = new ilCheckboxInputGUI($this->getPlugin()->txt("keep_aspect_ratio"), "keep_aspect_ratio");
-        $keep_aspect_ratio->setChecked(true);
-        $form->addItem($keep_aspect_ratio);
+        // width height
+        $width_height = new ilWidthHeightInputGUI($lng->txt("cont_width") .
+            " / " . $lng->txt("cont_height"), "size");
+        $width_height->setConstrainProportions(true);
+        $width_height->setRequired(true);
+        $width_height->setValueByArray(['size' => array_merge($prop, ['constr_prop' => true])]);
+        $form->addItem($width_height);
 
         // slider
         $slider = new ilNonEditableValueGUI('', '', true);

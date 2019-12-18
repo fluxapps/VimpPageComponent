@@ -145,6 +145,7 @@ return array(
     'ilVimpPageComponentConfigGUI' => $baseDir . '/classes/class.ilVimpPageComponentConfigGUI.php',
     'ilVimpPageComponentPlugin' => $baseDir . '/classes/class.ilVimpPageComponentPlugin.php',
     'ilVimpPageComponentPluginGUI' => $baseDir . '/classes/class.ilVimpPageComponentPluginGUI.php',
+    'ilWidthHeightInputGUI' => $baseDir . '/../../../../../../../Services/MediaObjects/classes/class.ilWidthHeightInputGUI.php',
     'srDateDurationInputGUI' => $baseDir . '/../../../Repository/RepositoryObject/ViMP/classes/GUI/Form/Input/class.srDateDurationInputGUI.php',
     'srGenericMultiInputGUI' => $baseDir . '/../../../Repository/RepositoryObject/ViMP/classes/GUI/Form/Input/class.srGenericMultiInputGUI.php',
     'srag\\ActiveRecordConfig\\VimpPageComponent\\ActiveRecordConfig' => $vendorDir . '/srag/activerecordconfig/src/ActiveRecordConfig.php',

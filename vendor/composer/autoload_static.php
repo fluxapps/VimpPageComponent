@@ -9,16 +9,16 @@ class ComposerStaticInitf0859171d7be7364beeb1c2667477756
     public static $prefixLengthsPsr4 = array (
         's' => 
         array (
-            'srag\\RemovePluginDataConfirm\\' => 29,
+            'srag\\RemovePluginDataConfirm\\VimpPageComponent\\' => 47,
             'srag\\LibrariesNamespaceChanger\\' => 31,
-            'srag\\DIC\\' => 9,
-            'srag\\CustomInputGUIs\\' => 21,
-            'srag\\ActiveRecordConfig\\' => 24,
+            'srag\\DIC\\VimpPageComponent\\' => 27,
+            'srag\\CustomInputGUIs\\VimpPageComponent\\' => 39,
+            'srag\\ActiveRecordConfig\\VimpPageComponent\\' => 42,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'srag\\RemovePluginDataConfirm\\' => 
+        'srag\\RemovePluginDataConfirm\\VimpPageComponent\\' => 
         array (
             0 => __DIR__ . '/..' . '/srag/removeplugindataconfirm/src',
         ),
@@ -26,15 +26,15 @@ class ComposerStaticInitf0859171d7be7364beeb1c2667477756
         array (
             0 => __DIR__ . '/..' . '/srag/librariesnamespacechanger/src',
         ),
-        'srag\\DIC\\' => 
+        'srag\\DIC\\VimpPageComponent\\' => 
         array (
             0 => __DIR__ . '/..' . '/srag/dic/src',
         ),
-        'srag\\CustomInputGUIs\\' => 
+        'srag\\CustomInputGUIs\\VimpPageComponent\\' => 
         array (
             0 => __DIR__ . '/..' . '/srag/custominputguis/src',
         ),
-        'srag\\ActiveRecordConfig\\' => 
+        'srag\\ActiveRecordConfig\\VimpPageComponent\\' => 
         array (
             0 => __DIR__ . '/..' . '/srag/activerecordconfig/src',
         ),
@@ -180,6 +180,7 @@ class ComposerStaticInitf0859171d7be7364beeb1c2667477756
         'ilVimpPageComponentConfigGUI' => __DIR__ . '/../..' . '/classes/class.ilVimpPageComponentConfigGUI.php',
         'ilVimpPageComponentPlugin' => __DIR__ . '/../..' . '/classes/class.ilVimpPageComponentPlugin.php',
         'ilVimpPageComponentPluginGUI' => __DIR__ . '/../..' . '/classes/class.ilVimpPageComponentPluginGUI.php',
+        'ilWidthHeightInputGUI' => __DIR__ . '/../..' . '/../../../../../../../Services/MediaObjects/classes/class.ilWidthHeightInputGUI.php',
         'srDateDurationInputGUI' => __DIR__ . '/../..' . '/../../../Repository/RepositoryObject/ViMP/classes/GUI/Form/Input/class.srDateDurationInputGUI.php',
         'srGenericMultiInputGUI' => __DIR__ . '/../..' . '/../../../Repository/RepositoryObject/ViMP/classes/GUI/Form/Input/class.srGenericMultiInputGUI.php',
         'srag\\ActiveRecordConfig\\VimpPageComponent\\ActiveRecordConfig' => __DIR__ . '/..' . '/srag/activerecordconfig/src/ActiveRecordConfig.php',

@@ -28,7 +28,8 @@
       "./classes/",
       "./src/",
       "../../../Repository/RepositoryObject/ViMP",
-      "../../../../../../../Services/COPage"
+      "../../../../../../../Services/COPage",
+      "../../../../../../../Services/MediaObjects/classes/class.ilWidthHeightInputGUI.php"
     ]
   },
   "config": {
