@@ -434,7 +434,8 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 
 		$tpl->addJavaScript($this->getPlugin()->getDirectory() . '/node_modules/ion-rangeslider/js/ion.rangeSlider.min.js');
 		$tpl->addCss($this->getPlugin()->getDirectory() . '/node_modules/ion-rangeslider/css/ion.rangeSlider.min.css');
-		$tpl->addJavaScript($this->getPlugin()->getDirectory() . '/js/vpco.js');
+        $tpl->addCss($this->getPlugin()->getDirectory() . '/templates/form.css');
+        $tpl->addJavaScript($this->getPlugin()->getDirectory() . '/js/vpco.js');
 		$tpl->addOnLoadCode('VimpPageComponent.initForm();');
 
 		include_once("Services/Form/classes/class.ilPropertyFormGUI.php");
