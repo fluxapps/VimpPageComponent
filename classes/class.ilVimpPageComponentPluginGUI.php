@@ -26,9 +26,8 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 
 	const SUBTAB_SEARCH = 'subtab_search';
 	const SUBTAB_OWN_VIDEOS = 'subtab_own_videos';
-
-
-	/**
+    const CMD_EDIT = 'edit';
+    /**
 	 * @var ilCtrl
 	 */
 	protected $ctrl;
@@ -385,7 +384,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 
 		if ($this->createElement($video_properties)) {
 			ilUtil::sendSuccess($lng->txt("msg_obj_modified"), true);
-			$this->edit();
+            $pc_id = $this->getPCGUI()->getContentObject()->readPCId();
+            $this->ctrl->setParameter($this, 'pc_id', $pc_id);
+            $this->ctrl->redirect($this, self::CMD_EDIT);
 		}
 	}
 

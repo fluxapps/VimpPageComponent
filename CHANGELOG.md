@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.2.1]
+- bugfix: edit settings after selection didn't work
+
 ## [1.2.0]
 - feature: default height & width (plugin configuration)
 - feature: open edit mask after video selection
