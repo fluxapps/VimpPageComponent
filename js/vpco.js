@@ -1,6 +1,6 @@
 VimpPageComponent = {
 
-	max_width: 1000,
+	max_width: 740,
 
 	slider: null,
 
