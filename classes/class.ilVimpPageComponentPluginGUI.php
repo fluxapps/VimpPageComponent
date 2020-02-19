@@ -112,6 +112,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 			case self::CMD_DELETE_VIDEO:
 			case self::CMD_UPDATE_VIDEO:
 			case self::CMD_CREATE:
+			case self::CMD_EDIT:
 			case self::CMD_INSERT:
 			default:
 				$this->$cmd();
@@ -371,8 +372,6 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	 *
 	 */
 	public function create() {
-		global $lng;
-
 		$mid = filter_input(INPUT_GET, 'mid', FILTER_SANITIZE_NUMBER_INT);
         $video = xvmpMedium::find($mid);
 
@@ -383,9 +382,9 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		);
 
 		if ($this->createElement($video_properties)) {
-			ilUtil::sendSuccess($lng->txt("msg_obj_modified"), true);
             $pc_id = $this->getPCGUI()->getContentObject()->readPCId();
             $this->ctrl->setParameter($this, 'pc_id', $pc_id);
+            $this->ctrl->setParameter($this, 'hier_id', 1); // this seems to be ignored, but is still necessary
             $this->ctrl->redirect($this, self::CMD_EDIT);
 		}
 	}
@@ -444,6 +443,13 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
         $prop = $this->getProperties();
         $video = xvmpMedium::find($prop['mid']);
 
+        // slider
+        $slider = new ilNonEditableValueGUI('', '', true);
+        $slider_tpl = $this->getPlugin()->getTemplate('tpl.slider_input.html', false, false);
+        $slider_tpl->setVariable('CONFIG', json_encode($this->getRangeSliderConfig()));
+        $slider->setValue($slider_tpl->get());
+        $form->addItem($slider);
+
         // thumbnail
         $thumbnail = new ilNonEditableValueGUI($lng->txt('preview'), '', true);
         $thumbnail->setValue('<img width="' . $prop['width'] . 'px" height="' . $prop['height'] . 'px" id="vpco_thumbnail" src="' . $video->getThumbnail() . '">');
@@ -456,13 +462,6 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
         $width_height->setRequired(true);
         $width_height->setValueByArray(['size' => array_merge($prop, ['constr_prop' => true])]);
         $form->addItem($width_height);
-
-        // slider
-        $slider = new ilNonEditableValueGUI('', '', true);
-        $slider_tpl = $this->getPlugin()->getTemplate('tpl.slider_input.html', false, false);
-        $slider_tpl->setVariable('CONFIG', json_encode($this->getRangeSliderConfig()));
-        $slider->setValue($slider_tpl->get());
-        $form->addItem($slider);
 
         $form->addCommandButton("update", $lng->txt("save"));
 		$form->addCommandButton("cancel", $lng->txt("cancel"));
@@ -536,7 +535,7 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
     protected function getRangeSliderConfig()
     {
         return [
-            'skin' => 'modern',
+            'skin' => 'round',
             'min' => 0,
             'max' => 100,
             'from' => 50,
