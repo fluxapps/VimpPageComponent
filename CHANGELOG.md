@@ -2,6 +2,7 @@
 
 ## [1.2.1]
 - bugfix: edit settings after selection didn't work
+- improvement: smaller changes in edit form styling
 
 ## [1.2.0]
 - feature: default height & width (plugin configuration)
