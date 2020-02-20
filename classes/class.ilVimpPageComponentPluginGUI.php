@@ -441,6 +441,8 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 		include_once("Services/Form/classes/class.ilPropertyFormGUI.php");
 		$form = new ilPropertyFormGUI();
         $prop = $this->getProperties();
+        $prop['width'] = round($prop['width']);
+        $prop['height'] = round($prop['height']);
         $video = xvmpMedium::find($prop['mid']);
 
         // slider
