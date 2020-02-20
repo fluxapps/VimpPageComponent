@@ -18,7 +18,7 @@ VimpPageComponent = {
 				let current_width = $('#vpco_thumbnail').width();
 				let current_height = $('#vpco_thumbnail').height();
 				let ratio = (current_width / current_height);
-				let new_height = new_width / ratio;
+				let new_height = Math.round(new_width / ratio);
 				$('#vpco_thumbnail').height(new_height);
 				$('input#prop_size_height').val(new_height);
 			}
@@ -32,7 +32,7 @@ VimpPageComponent = {
 				let current_width = $('#vpco_thumbnail').width();
 				let current_height = $('#vpco_thumbnail').height();
 				let ratio = (current_width / current_height);
-				let new_width = new_height * ratio;
+				let new_width = Math.round(new_height * ratio);
 				$('#vpco_thumbnail').width(new_width);
 				$('input#prop_size_width').val(new_width);
 				VimpPageComponent.updateSlider();
@@ -53,8 +53,8 @@ VimpPageComponent = {
 		let ratio = (current_width / current_height);
 		let percentage = data.from;
 
-		let new_width = VimpPageComponent.max_width * (percentage / 100);
-		let new_height = (new_width / ratio);
+		let new_width = Math.round(VimpPageComponent.max_width * (percentage / 100));
+		let new_height = Math.round((new_width / ratio));
 
 		$('#vpco_thumbnail').width(new_width);
 		$('input#prop_size_width').val(new_width);
