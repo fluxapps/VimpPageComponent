@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.3.0]
+- feature: introduced tables for usage in InteractiveVideo plugin
+
 ## [1.2.1]
 - bugfix: edit settings after selection didn't work
 - improvement: smaller changes in edit form styling
