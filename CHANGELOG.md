@@ -1,6 +1,6 @@
 # Changelog
 
-## [x]
+## [1.3.1]
 - Fix YouTube player
 
 ## [1.3.0]
