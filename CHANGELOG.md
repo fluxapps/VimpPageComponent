@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.3.1]
+- Fix YouTube player
+
 ## [1.3.0]
 - feature: introduced tables for usage in InteractiveVideo plugin
 
