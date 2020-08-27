@@ -1,5 +1,10 @@
 # Changelog
 
+## [x]
+- ILIAS 6 support
+- Remove ILIAS 5.2 support
+- Remove ILIAS 5.3 support
+
 ## [1.3.1]
 - Fix YouTube player
 
