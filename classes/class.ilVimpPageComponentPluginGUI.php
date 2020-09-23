@@ -493,20 +493,20 @@ class ilVimpPageComponentPluginGUI extends ilPageComponentPluginGUI {
 	public function getElementHTML($a_mode, array $a_properties, $a_plugin_version) {
 		try {
 			$video = xvmpMedium::find($a_properties['mid']);
-		} catch (xvmpException $e) {
-//			ilUtil::sendInfo($e->getMessage());
-			return '<img 
-				src="' . ilViMPPlugin::getInstance()->getImagePath('not_available.png') . '" 
-				height="' . $a_properties['height'] . '" 
-				width="' . $a_properties['width'] . '"
-			>';
-		}
 
 		xvmpVideoPlayer::loadVideoJSAndCSS(false);
 		$video_player = new xvmpVideoPlayer($video, xvmpConf::getConfig(xvmpConf::F_EMBED_PLAYER) || xvmpMedium::isVimeoOrYoutube($video));
 		$video_player->setOption('height', $a_properties['height'] . 'px');
 		$video_player->setOption('width', $a_properties['width'] . 'px');
 		return $video_player->getHTML();
+        } catch (xvmpException $e) {
+//			ilUtil::sendInfo($e->getMessage());
+			return '<img 
+				src="' . ilViMPPlugin::getInstance()->getImagePath('not_available.png') . '" 
+				height="' . $a_properties['height'] . '" 
+				width="' . $a_properties['width'] . '"
+			>';
+        }
 	}
 
 

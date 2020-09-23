@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.4.1]
+- Fix crash and not show "not available thumbnail" if video is deleted from VIMP server
+
 ## [1.4.0]
 - ILIAS 6 support
 - Remove ILIAS 5.2 support
