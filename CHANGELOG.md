@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.6.0]
+- ILIAS 7 compatability
+- dropped ILIAS 5.4 compatability
+
 ## [1.5.0]
 - compatability with plugin version 1.6.0
 
