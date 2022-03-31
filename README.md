@@ -14,9 +14,9 @@ As ILIAS administrator go to "Administration->Plugins" and install/activate the 
 fluxlabs ag, support@fluxlabs.ch
 
 ## Contributors
-theo, fluxlabs
-martin, fluxlabs
-fluxfw, fluxlabs
+* theo, fluxlabs
+* martin, fluxlabs
+* fluxfw, fluxlabs
 
 ## Contributing :purple_heart:
 Please ...
