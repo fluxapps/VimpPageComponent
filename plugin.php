@@ -1,7 +1,7 @@
 <?php
 $id = 'vpco';
-$version = '1.5.0';
+$version = '1.7.0';
 $ilias_min_version = '6.0';
 $ilias_max_version = '7.999';
-$responsible = 'Theodor Truffer';
-$responsible_mail = 'support@studer-raimann.ch';
+$responsible = 'fluxlabs ag';
+$responsible_mail = 'support@fluxlabs.ch';

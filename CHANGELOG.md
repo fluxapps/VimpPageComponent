@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.7.0]
+- added flux-publish-utils
+- changed metadata
+
 ## [1.6.0]
 - ILIAS 7 compatability
 - dropped ILIAS 5.4 compatability

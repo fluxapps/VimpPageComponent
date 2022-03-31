@@ -1,17 +1,23 @@
 {
-  "name": "studer-raimann.ch/vimp-page-component",
-  "type": "project",
+  "name": "fluxapps/vimp-page-component",
+  "version": "1.7.0",
+  "keywords": [
+    "ilias",
+    "vimp",
+    "fluxlabs"
+  ],
+  "type": "plugin",
   "license": "GPL-3.0+",
   "authors": [
     {
-      "name": "Theodor Truffer",
-      "email": "tt@studer-raimann.ch",
-      "homepage": "https://studer-raimann.ch",
-      "role": "Project Manager, Software Engineer"
+      "name": "fluxlabs ag",
+      "email": "support@fluxlabs.ch",
+      "homepage": "https://fluxlabs.ch",
+      "role": "Developer, Maintainer"
     }
   ],
   "support": {
-    "issues": "https://plugins.studer-raimann.ch/goto.php?target=uihk_srsu_PLVIMP"
+    "issues": "https://git.fluxlabs.ch"
   },
   "minimum-stability": "beta",
   "prefer-stable": true,
@@ -31,7 +37,6 @@
     "files": [
       "../../../Repository/RepositoryObject/ViMP/vendor/autoload.php"
     ]
-
   },
   "config": {
     "optimize-autoloader": true,
