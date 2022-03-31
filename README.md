@@ -10,12 +10,19 @@ git clone https://github.com/fluxapps/VimpPageComponent.git
 ```
 As ILIAS administrator go to "Administration->Plugins" and install/activate the plugin.
 
+## Maintenance
+fluxlabs ag, support@fluxlabs.ch
+
+## Contributors
+theo, fluxlabs
+martin, fluxlabs
+fluxfw, fluxlabs
+
 ## Contributing :purple_heart:
 Please ...
 1. ... register an account at https://git.fluxlabs.ch
 2. ... write us an email: support@fluxlabs.ch
 3. ... we give you access to the projects you like to contribute :fire:
-
 
 ## Adjustment suggestions / bug reporting :feet:
 Please ...
