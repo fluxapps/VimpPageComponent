@@ -1,5 +1,6 @@
 {
   "name": "fluxapps/vimp-page-component",
+  "description": "ILIAS ViMPPageComponent Plugin",
   "version": "1.7.0",
   "keywords": [
     "ilias",
