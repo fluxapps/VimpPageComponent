@@ -13,11 +13,6 @@ As ILIAS administrator go to "Administration->Plugins" and install/activate the 
 ## Maintenance
 fluxlabs ag, support@fluxlabs.ch
 
-## Contributors
-* theo, fluxlabs
-* martin, fluxlabs
-* fluxfw, fluxlabs
-
 ## Contributing :purple_heart:
 Please ...
 1. ... register an account at https://git.fluxlabs.ch
